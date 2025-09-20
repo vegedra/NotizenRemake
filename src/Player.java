@@ -26,9 +26,9 @@ public class Player {
             System.out.println("Sua maleta está vazio.");
         }
         else {
-            System.out.println("Em sua maleta tem:");
+            System.out.println("Em sua maleta há:");
             for (String item : inventario) {
-                System.out.println(" -" + item);
+                System.out.println(" - " + item);
             }
         }
     }
