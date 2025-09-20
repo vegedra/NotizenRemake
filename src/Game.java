@@ -5,6 +5,10 @@ import java.util.Scanner;
 
 public class Game {
 
+    // Cria um objeto Player para ter o inventário - static para poder acessar
+    // de qualquer método
+    static Player player = new Player();
+
     // Variaveis de instancia/atributos da classe Game,
     // permitindo acesso para todas as funções da classe
     int playerHP;
@@ -36,10 +40,16 @@ public class Game {
     // Função que inicializa o jogador
     public void playerSetup() {
 
+        // Restante das variaveis
         playerHP = 6;
         playerMoney = 33;
         playerKarma = 100;
         playerSuit = "Terno";
+
+        // Itens no inventário - adiciona uma classe Itens no futuro
+        player.addItem("Roupas");
+        player.addItem("Documentos");
+        player.addItem("Livros");
 
         System.out.println("Qual seu nome?");
         playerName = myScanner.nextLine();
@@ -64,7 +74,7 @@ public class Game {
 
     // Começo do jogo
     public void trainStation() {
-        System.out.println("Após uma longa viagem, você finalmente chega.");
+        System.out.println("Após uma longa viagem, você finalmente chega ao porto.");
         System.out.println("O capitão anuncia a chegada e pede para os passageiros desembarcarem.");
         System.out.println("O que você faz?\n");
 
@@ -76,23 +86,55 @@ public class Game {
         // Sair
         if (choice == 1) {
             System.out.println("Você decide sair do navio.");
-            System.out.println("Porém, antes de sair, você decide verificar sua mala.");
-            // código do inventário e resto dessa seção
-            System.out.println("Pressione Enter para continuar.");
-            enterScanner.nextLine();
-            inTrain();
+            sairNavio();
         }
-        // Ficar
-        if (choice == 2) {
-            System.out.println("\nCapitão: Herr " + playerName + ", já chegamos. Por favor, desembarque.");
-            System.out.println("Como você irá responder?\n");
-
-            System.out.println("1) De forma educada");
-            System.out.println("2) De forma grosseira");
+        // Ficar - else if quando apenas uma opção pode ser verdadeira*
+        else if (choice == 2) {
+            System.out.println("Você decide ficar mais um pouco no navio...");
+            ficarNavio();
         }
         // Comando desconhecido
         else {
             trainStation();
+        }
+    }
+
+    public void sairNavio() {
+        System.out.println("Antes de sair, você decide verificar sua maleta.\n");
+
+        // Código do inventário:
+        player.mostrarInventario();
+
+        System.out.println("\nPressione Enter para continuar.");
+        enterScanner.nextLine();
+        inTrain();
+    }
+
+    public void ficarNavio() {
+        System.out.println("\nCapitão: Herr " + playerName + ", já chegamos. Por favor, desembarque.");
+        System.out.println("Como você irá responder?\n");
+
+        System.out.println("1) De forma educada");
+        System.out.println("2) De forma grosseira");
+
+        choice = myScanner.nextInt();
+
+        if (choice == 1) {
+            System.out.println("\nVocê acena a cabeça e se prepara para sair.");
+            // Aumenta a reputação por ter sido educado
+            playerRep += 1;
+            playerKarma += 10;
+            sairNavio();
+        }
+        else if (choice == 2){
+            System.out.println("\nVocê olha com um olhar zangado para o capitão e estala a língua.");
+            System.out.println("Capitão: ...");
+            playerRep -= 1;
+            playerKarma -= 10;
+            sairNavio();
+        }
+        else {
+            ficarNavio();
         }
     }
 
@@ -123,13 +165,13 @@ public class Game {
             playerKarma += 10;
         }
         // Grosso
-        if (choice == 2) {
+        else if (choice == 2) {
             // Diminui a reputação por ter sido grosseiro
             playerRep -= 1;
             playerKarma -= 10;
         }
         // ignorar
-        if (choice == 3) {
+        else if (choice == 3) {
             // Nada ocorre - neutro
         }
         else {
@@ -154,15 +196,15 @@ public class Game {
 
         // Look around
         if (choice == 1) {
-            System.out.println("Você olha ao seu redor:");
+            lookAround();
             // escreve o que o jogador ve
         }
         // Norte
-        if (choice == 2) {
+        else if (choice == 2) {
             north();
         }
         // Sul
-        if (choice == 3) {
+        else if (choice == 3) {
             System.out.println("Você retorna de onde venho.\nVocê está de volta na estação de trem. " +
                     "Não há nada para fazer aqui.\n");
             System.out.println("Pressione Enter para continuar.");
@@ -170,19 +212,28 @@ public class Game {
             cityDayOne();
         }
         // Leste
-        if (choice == 4) {
-            System.out.println("Esta área está restrita...");
-            enterScanner.nextLine();
+        else if (choice == 4) {
+            areaRestrita();
             cityDayOne();
         }
         // Oeste
-        if (choice == 5) {
+        else if (choice == 5) {
             west();
         }
         // Comando desconhecido
         else {
             cityDayOne();
         }
+    }
+
+    public void areaRestrita() {
+        System.out.println("Esta área está restrita...");
+        enterScanner.nextLine();
+    }
+
+    public void lookAround() {
+        System.out.println("Você olha ao seu redor...");
+        enterScanner.nextLine();
     }
 
     // Praça
@@ -200,20 +251,19 @@ public class Game {
 
         // Conversar com NPC
         if (choice == 1){
-            System.out.println("Você olha ao seu redor:");
+            lookAround();
             // bla bla
         }
         // Desfile militar
-        if (choice == 2){
+        else if (choice == 2){
             //etc
         }
         // Inacessível
-        if (choice == 3){
-            System.out.println("Esta área está restrita...");
-            enterScanner.nextLine();
+        else if (choice == 3){
+            areaRestrita();
             north();
         }
-        if (choice == 4) {
+        else if (choice == 4) {
             System.out.println("Você decide voltar para onde estava...");
             enterScanner.nextLine();
             cityDayOne();
@@ -228,23 +278,9 @@ public class Game {
     public void west() {
         System.out.println("Você segue ao oeste.");
         System.out.println("Você chega até uma rua vazia. Há quase ninguém por aqui." +
-                "Você tem um mau pressentimento.");
-        enterScanner.nextLine();
-        System.out.println("Enquanto caminha, você percebe algo no chão. Olhar?");
+                "Você tem um mau pressentimento.\n");
 
-        System.out.println("1) Sim");
-        System.out.println("2) Não");
-
-        choice = myScanner.nextInt();
-
-        // Sim
-        if (choice == 1){
-            System.out.println("Você se agacha e percebe que é uma carteira perdida!");
-            // inventario ++ carteira
-        }
-        // Não
-        if (choice == 2){
-            System.out.println("Você escolhe ignorar o objeto e continuar andando.");
+        if (player.haveItem("Carteira perdida")) {
             System.out.println("1) Seguir em frente");
             System.out.println("2) Voltar");
 
@@ -254,13 +290,65 @@ public class Game {
             if (choice == 1){
                 eventAlley();
             }
-            // Sim
-            if (choice == 1){
-                west();
+            // Voltar
+            else {
+                cityDayOne();
             }
         }
         else {
-            west();
+            System.out.println("Enquanto caminha, você percebe algo no chão. Olhar?");
+
+            System.out.println("1) Sim");
+            System.out.println("2) Não");
+
+            choice = myScanner.nextInt();
+
+            // Sim
+            if (choice == 1){
+                eventoCarteira();
+            }
+            // Não
+            else if (choice == 2){
+                System.out.println("Você escolhe ignorar o objeto e continuar andando.");
+                System.out.println("1) Seguir em frente");
+                System.out.println("2) Voltar");
+
+                choice = myScanner.nextInt();
+
+                // Sim
+                if (choice == 1){
+                    eventAlley();
+                }
+                // Sim
+                else {
+                    cityDayOne();
+                }
+            }
+        }
+    }
+
+    public void eventoCarteira() {
+        System.out.println("Você se agacha e percebe que é uma carteira perdida!");
+        player.addItem("Carteira perdida");
+        System.out.println("Você guarda a Carteira Perdida em sua maleta.");
+        System.out.println("Você deveria procurar pelo dono dela agora...");
+
+        // TODO: quando entregar a carteira, recebe uma quantidade aleatoria de dinheiro:
+        // playerMoney = new java.util.Random().nextInt(10);    // De 0 a 9 $
+
+        System.out.println("Você quer continuar seguindo em frente");
+        System.out.println("1) Seguir em frente");
+        System.out.println("2) Voltar");
+
+        choice = myScanner.nextInt();
+
+        // Sim
+        if (choice == 1){
+            eventAlley();
+        }
+        // Sim
+        else {
+            cityDayOne();
         }
     }
 
