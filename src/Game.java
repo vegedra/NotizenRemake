@@ -5,8 +5,7 @@ import java.util.Scanner;
 
 public class Game {
 
-    // Cria um objeto Player para ter o inventário - static para poder acessar
-    // de qualquer método
+    // Cria um objeto Player para ter o inventário - static para poder acessar de qualquer método
     static Player player = new Player();
 
     // Variaveis de instancia/atributos da classe Game,
@@ -16,8 +15,11 @@ public class Game {
     int choice;
     int playerKarma;    // Se o jogador é bom ou mau - afeta o final
     int playerRep;      // Reputação do jogador - afeta interações
+    int playerSuspicion;      // Desconfiança das autoridades pelo jogador
     boolean eventAlleyFlag;     // Se já foi roubado ou não no beco
-    boolean scarFlag;           // cicatriz no queixo caso tenha reagido ao assalto
+    boolean scarFlag;           // Cicatriz no queixo caso tenha reagido ao assalto
+    boolean devolveuCarteira;   // Se devolveu a carteira e foi para a cafeteria junto com a mulher
+    boolean visitouLoja1;
     String playerSuit;
     String playerName;
 
@@ -50,19 +52,23 @@ public class Game {
     // Função que inicializa o jogador
     public void playerSetup() {
 
-        // Restante das variaveis
+        // Definição dos valores iniciais
         playerHP = 6;
         playerMoney = 33;
         playerKarma = 100;
+        playerSuspicion = 0;
         playerSuit = "Terno";
         playerName = "Joseph";
         eventAlleyFlag = false;
         scarFlag = false;
+        devolveuCarteira = false;
+        visitouLoja1 = false;
 
-        // Itens no inventário - adiciona uma classe Itens no futuro
+        // Itens no inventário - TODO: adiciona uma classe Itens no futuro
         player.addItem("Roupas");
         player.addItem("Documentos");
         player.addItem("Livros");
+        player.addItem("Reserva");
     }
 
     // Introdução a história
@@ -73,7 +79,7 @@ public class Game {
         System.out.println("Meus motivos oficiais são para negociação e observação.");
         System.out.println("Entretanto...");
         System.out.println("O que realmente busco é informação a respeito do meu avô:");
-        System.out.println("Aquele que me criou e que, agora, se encontra desaparecido...");
+        System.out.println("Aquele que me criou e que, agora, se encontra desaparecido após enviar uma carta para mim...");
 
         // Pausa o jogo e espera por input para prosseguir
         pressEnter();
@@ -108,7 +114,7 @@ public class Game {
     }
 
     public void sairNavio() {
-        System.out.println("Antes de sair, você decide verificar sua maleta.\n");
+        System.out.println("\nAntes de sair, você decide verificar sua maleta.\n");
 
         // Código do inventário:
         player.mostrarInventario();
@@ -199,7 +205,7 @@ public class Game {
         // Look around
         if (choice == 1) {
             System.out.println("Você olha ao seu redor...");
-            // escreve o que o jogador vê - descrição das direções
+            System.out.println("As pessoas caminham felizes pela rua, porém, outras nem tanto...");
             pressEnter();
             cityDayOne(true);
         }
@@ -233,7 +239,7 @@ public class Game {
     // Praça
     public void north() {
         System.out.println("Você caminha até chegar em uma praça.");
-        // etc
+        System.out.println("Há uma fonte em seu centro, com pessoas conversando ao seu redor.");
 
         System.out.println("\nO que você irá fazer?");
         System.out.println("1) Olhar");
@@ -246,12 +252,40 @@ public class Game {
         // Conversar com NPC
         if (choice == 1){
             System.out.println("Você olha ao seu redor...");
-            // bla bla
-            pressEnter();
+            // Se não visitou a loja
+            if (!visitouLoja1) {
+                System.out.println("\nUm velho se aproxima.");
+                System.out.println("Hubriston: Boa tarde, meu jovem. Eu me chamo C. Hubriston." +
+                        "\nSou um vendedor e gostaria de saber se tem interesse neste produto:" +
+                        "\nCigarros importados! Por apenas 10 ℛℳ!");
+
+                System.out.println("Comprar?");
+                System.out.println("\n1) Sim");
+                System.out.println("2) Não");
+
+                choice = myScanner.nextInt();
+
+                if (choice == 1) {
+                    player.addItem("Cigarros importados");
+                    playerMoney -= 10;
+                    System.out.println("Você comprou os cigarros.");
+                }
+                System.out.println("Hubriston: Obrigado. Estarei pela cidade amanhã também.");
+                visitouLoja1 = true;
+                pressEnter();
+                north();
+            }
+            else {
+                System.out.println("Nada te interessa.");
+                pressEnter();
+                north();
+            }
+
         }
         // Desfile militar
         else if (choice == 2){
-            //etc
+            System.out.println("Você segue ao norte.");
+            northDesfile();
         }
         // Inacessível
         else if (choice == 3){
@@ -334,10 +368,8 @@ public class Game {
         System.out.println("\nVocê se agacha e percebe que é uma carteira perdida!");
         player.addItem("Carteira perdida");
         System.out.println("Você guarda a Carteira Perdida em sua maleta.");
-        System.out.println("Você deveria procurar pelo dono dela agora...");
-
-        // TODO: quando entregar a carteira, recebe uma quantidade aleatoria de dinheiro:
-        // playerMoney = new java.util.Random().nextInt(10);    // De 0 a 9 $
+        System.out.println("Dentro dela há um documento de identidade. Você memoriza o rosto da dona da carteira.");
+        System.out.println("Você deveria procurar por ela agora...");
 
         System.out.println("\nVocê quer continuar seguindo em frente?");
         System.out.println("1) Seguir em frente");
@@ -381,6 +413,7 @@ public class Game {
                 player.removeItem("Roupas");
                 player.removeItem("Documentos");
                 player.removeItem("Livros");
+                player.removeItem("Reserva");
                 if (player.haveItem("Carteira perdida")) { player.removeItem("Carteira perdida"); }
 
                 System.out.println("\nDesconhecido: Excelente escolha! Você é um sujeito muito inteligente!");
@@ -464,4 +497,220 @@ public class Game {
             eventAlleyResist();
         }
     }
+
+    // Desfile militar
+    public void northDesfile() {
+        System.out.println("\nUma espécie de desfile militar parece estar acontecendo." +
+                "\nHá vários militares na rua e bandeiras pairando..." +
+                "\nVocê tenta andar pela multidão, mas é díficil enxergar para onde você está indo.\n");
+
+        System.out.println("\nVocê vê diferentes ruas e se sente perdido. Tudo isso enquanto é arrastado pela multidão.");
+        System.out.println("1) Direita");
+        System.out.println("2) Esquerda");
+
+        choice = myScanner.nextInt();
+
+        if (choice == 1) {
+            shopCafe();
+        }
+        else if (choice == 2) {
+            eventGuard();
+        }
+        else {
+            northDesfile();
+        }
+    }
+
+    // Evento devolver carteira
+    public void eventGuard() {
+        System.out.println("\nVocê segue a multidão até chegar a uma estação policial.");
+        if (player.haveItem("Carteira perdida")) {
+            System.out.println("Você vê uma mulher idêntica a que você viu no documento de identidade na carteira encontrada.");
+
+            System.out.println("O que você irá fazer?");
+            System.out.println("1) Devolver a carteira");
+            System.out.println("2) Ficar com a carteira e sair");
+
+            choice = myScanner.nextInt();
+
+            if (choice == 1) {
+                player.removeItem("Carteira perdida");
+                playerKarma += 10;
+                playerRep += 1;
+                devolveuCarteira = true;
+
+                System.out.println("Você caminha até a mulher. Ela parece desesperada");
+                System.out.println("Mulher: Na, sowas! Minha carteira!");
+                System.out.println("Mulher: Muito obrigada por devolvê-la para mim!" +
+                        "\nPor favor, não tenho muito para dar, mas posso pagar para ti uma torta!" +
+                        "\nOh, sim... a torta de maçã da cafeteria aqui perto é fantástica!");
+                System.out.println("E, assim, mais uma vez você é arrastado até um lugar diferente...");
+                pressEnter();
+                shopCafe();
+            }
+            else if (choice == 2) {
+                player.removeItem("Carteira perdida");
+                playerKarma -= 10;
+                playerRep -= 1;
+                playerMoney += 14;
+
+                System.out.println("Você ignora a mulher e pega o dinheiro na carteira, a jogando no chão logo em seguida.");
+                System.out.println("Você recebeu 14 ℛℳ...");
+                pressEnter();
+                northDesfile();
+            }
+            else {
+                eventGuard();
+            }
+        }
+        else {
+            System.out.println("Não há nada para fazer aqui.");
+            pressEnter();
+            northDesfile();
+        }
+    }
+
+    // Cafeteria
+    public void shopCafe() {
+        System.out.println("\nVocê entra em uma cafeteria. O doce aroma do lugar traz lembranças doces.");
+
+        // Se veio com a mulher
+        if (devolveuCarteira == true) {
+            System.out.println("Mulher: Eu amo este lugar! Aqui, uma torta de maçã para você! O que achou?");
+
+            System.out.println("1) Bom");
+            System.out.println("2) Ruim");
+
+            choice = myScanner.nextInt();
+
+            if (choice == 1) {
+                System.out.println("Que bom que gostou!");
+                System.out.println("Ela ri, escondendo a boca com a mão.");
+            }
+            else if (choice == 2) {
+                System.out.println("Oh... sinto muito que não tenha gostado...");
+                System.out.println("Ela parece triste...");
+            }
+            else {
+                shopCafe();
+            }
+
+            System.out.println("Vocês dois conversam por um tempo. Você cita o hotel em que está hospedado.");
+            System.out.println("Mulher: Sei... esse hotel é um dos melhores da cidade, mas...");
+            System.out.println("Ela hesita...");
+            System.out.println("Mulher: Parece que a gestapo está procurando alguém dentro do hotel..." +
+                    "\nTome cuidado ao chegar lá.");
+
+            System.out.println("Mulher: Enfim, você deveria ir ao seu hotel agora. Está ficando tarde." +
+                    "\nEspero vê-lo novamente!");
+            System.out.println("Mulher: Alías, meu nome é Charlotte, mas você pode me chamar de Lotte..." +
+                    "\nLotte: Boa noite!");
+            devolveuCarteira = false;
+            pressEnter();
+            chegadaHotel();
+        }
+        // Se veio sozinho
+        else {
+            System.out.println("Você vai até o balcão e um homem pergunta o que você irá comprar.");
+            System.out.println("Você diz que apenas precisa de uma informação...");
+            System.out.println("\nBalconista: Heh... informação hoje em dia tem preço, amigo.");
+            System.out.println("\nO que você irá fazer?");
+
+            System.out.println("1) Onde fica o hotel? - 5 ℛℳ");
+            System.out.println("2) Algo extra... - 10 ℛℳ");
+
+            choice = myScanner.nextInt();
+
+            if (choice == 1) {
+                playerMoney -= 5;
+                System.out.println("\nBalconista: irei te dizer...");
+
+            }
+            else if (choice == 2) {
+                playerMoney -= 10;
+                System.out.println("\nBalconista: Vou te dizer onde fica, porém, eu tomaria cuidado com as palavras...");
+            }
+            else {
+                shopCafe();
+            }
+            System.out.println("\nApós ouvir, você sai da cafeteria.");
+            System.out.println("Esse pode ser um bom lugar para se conseguir informações no futuro...");
+            pressEnter();
+            chegadaHotel();
+        }
+    }
+
+    // Final dia 1
+    public void chegadaHotel() {
+        System.out.println("Você enfim chegou ao hotel. O prédio é enorme e bonito.");
+        System.out.println("Atendente: Papéis da reserva, por favor.");
+
+        System.out.println("O que você irá fazer?");
+        System.out.println("1) Entregar reserva");
+        System.out.println("2) Perguntar sobre seu avô");
+
+        choice = myScanner.nextInt();
+
+        if (choice == 1) {
+            // Se perdeu a reserva
+            if (!player.haveItem("Reserva")) {
+                playerSuspicion += 1;
+
+                System.out.println("Você diz que foi roubado e perdeu sua reserva, tirando um broche de sua jaqueta e mostrando.");
+                System.out.println("Atendente: ...");
+                System.out.println("A mulher te olha com um olhar suspeito e faz algumas perguntas. Após respondê-las e ter sua" +
+                        "identidade confirmada, você vai para seu quarto." +
+                        "\nAntes de subir, você percebe que a mulher anota algo.");
+                pressEnter();
+                endDayOne();
+            }
+            else {
+                player.removeItem("Reserva");
+                System.out.println("Você entrega a reserva e recebe a chave do seu quarto.");
+                pressEnter();
+                endDayOne();
+            }
+        }
+        else if (choice == 2) {
+            // Só aumenta se ainda for < 4
+            if (playerSuspicion <= 4) {
+                playerSuspicion += 2;
+                if (playerSuspicion > 4) {
+                    playerSuspicion = 4; // Valor máximo para não estragar o jogo logo no começo
+                }
+            }
+
+            if (playerSuspicion > 4) {
+                System.out.println("\nAtendente: Senhor, se valoriza sua vida, pare de fazer perguntas.");
+                pressEnter();
+                chegadaHotel();
+            } else {
+                System.out.println("Você pergunta sobre seu avô: Isaac Friedmann.\n" +
+                        "\nEm sua carta, ele dizia ter estado neste hotel." +
+                        "\nA atendente parece se assustar e diz não saber sobre...");
+                pressEnter();
+                chegadaHotel();
+            }
+        }
+        else {
+            chegadaHotel();
+        }
+    }
+
+    // Final do primeiro dia
+    public void endDayOne() {
+        System.out.println("Você enfim chega ao seu quarto. De sua janela, você observa a lua surgir lentamente.");
+        System.out.println("Memórias invadem sua mente...");
+
+        System.out.println("Após a morte de seus pais, seu avô o acolheu e o criou no campo.");
+        System.out.println("O contato entre vocês diminuiu após a faculdade. Na última vez que se viram, nenhum dos dois" +
+                "sabia que poderia ser a última.");
+        System.out.println("\nVocê sobreviveu o 1o Dia.");
+        pressEnter();
+        System.exit(0);
+    }
 }
+
+// TODO: DAY 2
+// Flashback - dia 2 começa com o sonho
+// Evento no beco - se roubado, a maleta será devolvida no dia seguinte por alguém misterioso
