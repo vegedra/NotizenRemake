@@ -16,11 +16,14 @@ public class Game {
     int choice;
     int playerKarma;    // Se o jogador é bom ou mau - afeta o final
     int playerRep;      // Reputação do jogador - afeta interações
+    boolean eventAlleyFlag;     // Se já foi roubado ou não no beco
+    boolean scarFlag;           // cicatriz no queixo caso tenha reagido ao assalto
     String playerSuit;
     String playerName;
 
     // Cria os scanners - recebe input do jogador
     Scanner myScanner = new Scanner(System.in);
+    Scanner enterScanner = new Scanner(System.in);
 
     // Função principal dentro da classe Game - é o ponto de entrada do programa
     public static void main(String[] args) {
@@ -36,6 +39,14 @@ public class Game {
         game.gameIntro();
     }
 
+    // Pausa o jogo e espera por input para prosseguir
+    public void pressEnter() {
+        System.out.println("\nPressione Enter para continuar.\n");
+
+        // Aguarda o jogador apertar Enter
+        enterScanner.nextLine();
+    }
+
     // Função que inicializa o jogador
     public void playerSetup() {
 
@@ -45,6 +56,8 @@ public class Game {
         playerKarma = 100;
         playerSuit = "Terno";
         playerName = "Joseph";
+        eventAlleyFlag = false;
+        scarFlag = false;
 
         // Itens no inventário - adiciona uma classe Itens no futuro
         player.addItem("Roupas");
@@ -65,12 +78,6 @@ public class Game {
         // Pausa o jogo e espera por input para prosseguir
         pressEnter();
         trainStation();
-    }
-
-    // Pausa o jogo e espera por input para prosseguir
-    public void pressEnter() {
-        System.out.println("\nPressione Enter para continuar.\n");
-        myScanner.nextLine();
     }
 
     // Começo do jogo
@@ -167,13 +174,18 @@ public class Game {
             pressEnter();
         }
         // Continua das condições anteriores ou vem aqui direto caso playerRep == 0
-        cityDayOne();
+        cityDayOne(true);
     }
 
     // Na cidade, dia 1
-    public void cityDayOne() {
-        System.out.println("Após algumas horas no trem, você finalmente chega na cidade.");
-        System.out.println("Ainda há tempo até a hora do check-in no hotel.");
+    public void cityDayOne(boolean firstTime) {
+        if (firstTime == true) {
+            System.out.println("Após algumas horas no trem, você finalmente chega na cidade.");
+            System.out.println("Ainda há tempo até a hora do check-in no hotel.");
+        }
+        else {
+            System.out.println("Você retorna ao centro.");
+        }
 
         System.out.println("\nO que você irá fazer?");
         System.out.println("1) Olhar ao seu redor");
@@ -189,7 +201,7 @@ public class Game {
             System.out.println("Você olha ao seu redor...");
             // escreve o que o jogador vê - descrição das direções
             pressEnter();
-            cityDayOne();
+            cityDayOne(true);
         }
         // Norte
         else if (choice == 2) {
@@ -200,13 +212,13 @@ public class Game {
             System.out.println("Você retorna de onde veio.\nVocê está de volta na estação de trem. " +
                     "Não há nada para fazer aqui.");
             pressEnter();
-            cityDayOne();
+            cityDayOne(false);
         }
         // Leste
         else if (choice == 4) {
             System.out.println("Esta área está restrita...");
             pressEnter();
-            cityDayOne();
+            cityDayOne(true);
         }
         // Oeste
         else if (choice == 5) {
@@ -214,7 +226,7 @@ public class Game {
         }
         // Comando desconhecido
         else {
-            cityDayOne();
+            cityDayOne(true);
         }
     }
 
@@ -250,7 +262,7 @@ public class Game {
         else if (choice == 4) {
             System.out.println("Você decide voltar para onde estava...");
             pressEnter();
-            cityDayOne();
+            cityDayOne(false);
         }
         else {
             north();
@@ -276,7 +288,7 @@ public class Game {
             }
             // Voltar
             else if (choice == 2) {
-                cityDayOne();
+                cityDayOne(false);
             }
             else {
                 west();
@@ -308,7 +320,7 @@ public class Game {
                 }
                 // Sim
                 else if (choice == 2) {
-                    cityDayOne();
+                    cityDayOne(false);
                 }
                 else {
                     west();
@@ -317,6 +329,7 @@ public class Game {
         }
     }
 
+    // Evento de encontrar a carteira perdida
     public void eventoCarteira() {
         System.out.println("\nVocê se agacha e percebe que é uma carteira perdida!");
         player.addItem("Carteira perdida");
@@ -338,11 +351,117 @@ public class Game {
         }
         // Sim
         else {
-            cityDayOne();
+            cityDayOne(false);
         }
     }
 
+    // Evento do Assalto
     public void eventAlley() {
+        if (eventAlleyFlag) {
+            System.out.println("É um beco sem saída. Você decide retornar ao centro.");
+            pressEnter();
+            cityDayOne(false);
+        }
+        else {
+            System.out.println("\nVocê continua caminhando até perceber que acabou entrando em um beco." +
+                    "\nO lugar é escuro e possui um cheiro estranho..." +
+                    "\nDe repente, alguém toca seu ombro.");
+            System.out.println("\nDesconhecido: Se não quiser se ferir, é melhor entregar esta maleta. Agora!");
 
+            System.out.println("\nO que você vai fazer?");
+            System.out.println("1) Entregar a maleta");
+            System.out.println("2) Resistir");
+            if (player.haveItem("Carteira perdida")) { System.out.println("3) Entregar a carteira encontrada"); }
+
+            choice = myScanner.nextInt();
+
+            // Sim
+            if (choice == 1) {
+                eventAlleyFlag = true;
+                player.removeItem("Roupas");
+                player.removeItem("Documentos");
+                player.removeItem("Livros");
+                if (player.haveItem("Carteira perdida")) { player.removeItem("Carteira perdida"); }
+
+                System.out.println("\nDesconhecido: Excelente escolha! Você é um sujeito muito inteligente!");
+                System.out.println("Uma risada pode ser ouvida enquanto o bandido foge com suas coisas...");
+                System.out.println("Você deveria procurar pela polícia.");
+                pressEnter();
+                cityDayOne(false);
+            }
+            // Sim
+            else if (choice == 2) {
+                eventAlleyResist();
+            }
+            else if (choice == 3) {
+                if (player.haveItem("Carteira perdida")) {
+                    eventAlleyFlag = true;
+                    player.removeItem("Carteira perdida");
+                    playerKarma -= 10;
+
+                    System.out.println("\nVocê decide entregar a carteira que havia encontrado no chão...");
+                    System.out.println("\nDesconhecido: Excelente escolha! Você é um sujeito muito inteligente!");
+                    System.out.println("Uma risada pode ser ouvida enquanto o bandido foge com suas coisas...");
+                    pressEnter();
+                    cityDayOne(false);
+                }
+                else {
+                    eventAlley();
+                }
+            }
+            else {
+                eventAlley();
+            }
+        }
+    }
+
+    // Se resistir ao assalto
+    public void eventAlleyResist() {
+        System.out.println("Você decide resistir o assalto." +
+                "\nVocê é um diplomata, então lutar está fora de cogitação." +
+                "\nNão há guardas por perto. Você olha bem para o assaltante...\n" +
+                "\nEle parece estar bêbado. Em sua mão há uma navalha.");
+
+        System.out.println("\nO que você vai fazer?");
+        System.out.println("1) Tentar fugir");
+        System.out.println("2) Dialogar");
+
+        choice = myScanner.nextInt();
+
+        if (choice == 1) {
+            playerHP -= 1;
+            scarFlag = true;
+            eventAlleyFlag = true;
+
+            System.out.println("\nVocê decide fugir." +
+                    "\nVocê usa a maleta de escudo e avança no bandido." +
+                    "\nVocê sente uma dor no braço e um corte é feito em seu queixo." +
+                    "\nNada muito grave, mas ficará marcado...\n" +
+                    "\nVocê conseguiu fugir!");
+            pressEnter();
+            cityDayOne(false);
+        }
+        else if (choice == 2) {
+            System.out.println("Você tenta conversar com o bandido...");
+
+            if (playerRep >= 2) {
+                eventAlleyFlag = true;
+
+                System.out.println("\nDesconhecido: Ah? Que barulho foi esse?!");
+                System.out.println("Sons de passos se aproximam!" +
+                        "\nO assaltante se assusta e, ao olhar para você uma última vez com um olhar irritado, foge.");
+                System.out.println("Você decide sair daqui também.");
+                pressEnter();
+                cityDayOne(false);
+            }
+            else {
+                System.out.println("Mas ele está bêbado demais para te ouvir...");
+                pressEnter();
+                eventAlleyResist();
+            }
+        }
+        else {
+            eventAlleyResist();
+        }
     }
 }

@@ -15,6 +15,10 @@ public class Player {
         // System.out.println(item + " foi adicionado ao seu inventário.\n"); - coloca pra mostrar só no terminal depois
     }
 
+    public void removeItem(String item) {
+        inventario.remove(item);
+    }
+
     // Devolve False (0) ou True (1) caso o item especificado esteja no inventário
     public boolean haveItem(String item) {
         return inventario.contains(item);
