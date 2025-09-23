@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Notizen:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Notizen_jar</output-path>
+    <root id="archive" name="Notizen.jar">
+      <element id="module-output" name="Notizen" />
+    </root>
+  </artifact>
+</component>
