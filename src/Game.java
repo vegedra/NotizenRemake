@@ -264,34 +264,13 @@ public class Game {
         return button;
     }
 
-    // Para pausar o jogo e mostrar apenas um 'continuar'
-    public void continueText(String texto, Runnable actionToContinue) {
-        mainTextArea.setText(texto);
-
-        // Ajusta os botões
-        choice1.setText("Continuar");
-        choice2.setText("-");
-        choice3.setText("-");
-        choice4.setText("-");
-
-        // Desativa os botões que não vão ser usados
-        choice2.setEnabled(false);
-        choice3.setEnabled(false);
-        choice4.setEnabled(false);
-
-        // Remove listeners antigos do choice1
-        for (ActionListener al : choice1.getActionListeners()) {
-            choice1.removeActionListener(al);
-        }
-
-        // Adiciona novo listener que executa a ação passada
-        choice1.addActionListener(e -> actionToContinue.run());
-    }
-
     // Introdução do jogo
     public void gameIntro() {
 
+        // Define em que 'janela/room' o jogador está
         playerPosition = "gameIntro";
+
+        // Mostra o texto
         mainTextArea.setText("29 de Agosto, 1939" +
                 "\nEu sou Joseph. Sou um diplomata à caminho da Alemanha." +
                 "\nMeus motivos oficiais são para negociação e observação, entretanto, " +
@@ -299,6 +278,7 @@ public class Game {
                 " aquele que me criou e que, agora, se encontra desaparecido após enviar uma carta para mim...\n" +
                 "\nMe hospedei no mesmo hotel em que ele estava. Preciso chegar lá até o fim do dia.");
 
+        // Escolhas
         choice1.setText("Continuar");
         choice2.setText("-");
         choice3.setText("-");
@@ -350,20 +330,41 @@ public class Game {
     }
 
     // Tela de continuar
-    public void respostaNavio() {
-        if 
+    public void respostaNavio(boolean educado) {
+        playerPosition = "respostaNavio";
 
+        // Se foi arrogante
+        if (!educado) {
+            playerRep -= 1;
+            playerKarma -= 10;
 
+            mainTextArea.setText("Você olha com um olhar zangado para o capitão e estala a língua." +
+                                    "\nCapitão: ...");
+        }
+        // Se foi educado
+        else {
+            playerRep += 1;
+            playerKarma += 10;
 
+            mainTextArea.setText("Você acena com a cabeça e se prepara para sair.");
+        }
+        // Debug
+        System.out.println("playerRep: " + playerRep +
+            "\nplayerKarma: " + playerKarma);
 
-        continueText("Você acena com a cabeça e se prepara para sair.\n", () -> sairNavio());
+        choice1.setText("Continuar");
+        choice2.setText("-");
+        choice3.setText("-");
+        choice4.setText("-");
     }
 
 
 
 
-
+    // Lida com o input do jogador nos botões-GUI
     public class ChoiceHandler implements ActionListener {
+
+        // Metodo chamado quando um botão é clicado
         public void actionPerformed(ActionEvent event) {
 
             // Recebe o botão apertado e o armazena na String
@@ -379,32 +380,32 @@ public class Game {
                         case "c4": break;
                     } break;
                 case "trainStation":
-                    switch(playerChoice) {
+                    switch (playerChoice) {
                         case "c1": sairNavio(); break;
                         case "c2": ficarNavio(); break;
                         case "c3": break;
                         case "c4": break;
                     } break;
                 case "ficarNavio":
-                    switch(playerChoice) {
+                    switch (playerChoice) {
                         case "c1":
-                            respostaNavio();
+                            respostaNavio(false);
                             break;
                         case "c2":
-                            playerRep -= 1;
-                            playerKarma -= 10;
-
-                            // Debug
-                            System.out.println("playerRep: " + playerRep +
-                            "\nplayerKarma: " + playerKarma);
-
-                            continueText("Você olha com um olhar zangado para o capitão e estala a língua." +
-                                    "\nCapitão: ...", () -> sairNavio());
+                            respostaNavio(true);
                             break;
                         case "c3": break;
                         case "c4": break;
                     } break;
-            }
+                case "respostaNavio":
+                    switch (playerChoice) {
+                        case "c1":
+                            respostaNavio(false);
+                            break;
+                        case "c2": sairNavio(); break;
+                        case "c3": break;
+                        case "c4": break;
+                    } break;
+                }
         }
     }
-}
