@@ -32,100 +32,82 @@ public class Story {
         ui.mainTextArea.setCaretPosition(0);
     }
 
-    // Função para mostrar a tela de stats/inventário
+    // ---- Tela de Menu ----
     public void showMenuScreen() {
-        // Guarda o estado atual ANTES de mudar para a tela de status
+        // Salva estado atual
+        saveGameState();
+
+        // Configura UI para modo status
+        vm.showMenuScreen();
+
+        // Mostra conteúdo do status
+        showStatusContent();
+    }
+
+    // Salva as telas antes de abrir a de menu
+    private void saveGameState() {
         game.savedPosition = game.playerPosition;
-        game.savedText = ui.mainTextArea.getText(); // Salva o texto atual
+
+        game.savedText = ui.mainTextArea.getText();
+
         game.savedChoice1 = ui.choice1.getText();
         game.savedChoice2 = ui.choice2.getText();
         game.savedChoice3 = ui.choice3.getText();
         game.savedChoice4 = ui.choice4.getText();
+
         game.savedNext1 = game.nextPosition1;
         game.savedNext2 = game.nextPosition2;
         game.savedNext3 = game.nextPosition3;
         game.savedNext4 = game.nextPosition4;
-
-        // Configura a UI para modo status
-        vm.showMenuScreen();
-
-        // Agora mostra a tela de status
-        showMenuContent();
     }
 
-    private void showMenuContent() {
-        // Monta o texto de status
-        StringBuilder statusText = new StringBuilder();
-        statusText.append("=== STATUS ===\n\n")
-                .append("Joseph\n")
-                .append("Pontos de Vida: ").append(player.hp).append("\n")
-                .append("Dinheiro: ").append(player.money).append(" ℛℳ\n")
-                .append("Karma: ").append(player.karma).append("\n")
-                .append("Reputação: ").append(player.rep).append("\n")
-                .append("Nível de suspeito: ").append(player.suspicion).append("\n")
-                .append("Dia ").append(player.day).append("\n")
-                .append("\n=== INVENTÁRIO ===\n");
+    private void showStatusContent() {
+        // Imprime a tela de menu
+        printf("=== STATUS ===\n\n", false);
+        printf("Joseph\n", true);
+        printf("Pontos de Vida: " + player.hp + "\n", true);
+        printf("Dinheiro: " + player.money + " ℛℳ\n", true);
+        printf("Karma: " + player.karma + "\n", true);
+        printf("Reputação: " + player.rep + "\n", true);
+        printf("Nível de suspeito: " + player.suspicion + "\n", true);
+        printf("Dia " + player.day + "\n", true);
+        printf("\n=== INVENTÁRIO ===", true);
 
-        if (inventario.isEmpty()) {
-            statusText.append("Você não possui itens no inventário.\n");
-        } else {
-            int itemNumber = 1;
-            for (Item item : inventario.getItens()) {
-                statusText.append(itemNumber).append(". ").append(item.toString()).append("\n");
-                itemNumber++;
-            }
-        }
+        // Mostra o inventário
+        inventario.mostrarInventario(ui);
 
-        // Mostra na tela
-        printf(statusText.toString(), false);
-
-        // Configura APENAS o botão "Voltar"
+        // Configura botões
         ui.choice1.setText("Voltar ao Jogo");
         ui.choice2.setText("-");
         ui.choice3.setText("-");
         ui.choice4.setText("-");
 
-        // Teste
-        ui.choice2.setVisible(false);
-        ui.choice3.setVisible(false);
-        ui.choice4.setVisible(false);
-
+        // Funções dos botões
         game.nextPosition1 = "backToGame";
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
 
-        game.playerPosition = "menuScreen";
+        game.playerPosition = "statusScreen";
     }
 
+    // Volta para a tela antes de abrir o menu
     public void backToGame() {
-
-        // Restaura a UI normal
         vm.backToGame();
+        restoreGameState();
+    }
 
-        // Restaura o estado salvo
+    private void restoreGameState() {
         if (game.savedPosition != null) {
-            // Restaura o texto anterior
             ui.mainTextArea.setText(game.savedText);
-
-            // Restaura os botões
             ui.choice1.setText(game.savedChoice1);
             ui.choice2.setText(game.savedChoice2);
             ui.choice3.setText(game.savedChoice3);
             ui.choice4.setText(game.savedChoice4);
-
-            // Teste
-            ui.choice2.setVisible(true);
-            ui.choice3.setVisible(true);
-            ui.choice4.setVisible(true);
-
-            // Restaura as próximas posições
             game.nextPosition1 = game.savedNext1;
             game.nextPosition2 = game.savedNext2;
             game.nextPosition3 = game.savedNext3;
             game.nextPosition4 = game.savedNext4;
-
-            // Restaura a posição do jogador
             game.playerPosition = game.savedPosition;
         }
     }

@@ -62,7 +62,7 @@ public class VisibilityManager {
 
         // Mostra apenas o botão 1 (Voltar)
         ui.choice1.setVisible(true);
-        ui.choice1.setText("Voltar ao Jogo");
+        ui.choice1.setText("Voltar");
     }
 
     // Volta para o jogo - o Story vai restaurar o conteúdo anterior
