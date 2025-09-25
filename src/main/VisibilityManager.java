@@ -72,6 +72,25 @@ public class VisibilityManager {
         ui.choice2.setText("Sair");
     }
 
+    // Métodos para a tela de status (simples)
+    public void gameOverScreen() {
+        // Esconde as coisas
+        ui.statButtonPanel.setVisible(false);
+        ui.mainTextPanel.setVisible(false);
+        ui.playerPanel.setVisible(false);
+        ui.picturePanel.setVisible(false);
+        ui.inventoryPanel.setVisible(false);
+
+        // Esconde todos os botões de escolha normais
+        hideAllChoiceButtons();
+
+        // Mostra apenas o botão 1 (Voltar)
+        ui.choice1.setVisible(true);
+        ui.choice1.setText("Voltar");
+        ui.choice2.setVisible(true);
+        ui.choice2.setText("Sair");
+    }
+
     // Volta para o jogo - o Story vai restaurar o conteúdo anterior
     public void backToGame() {
         // Mostra o botão de menu novamente
