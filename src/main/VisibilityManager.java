@@ -9,9 +9,6 @@ public class VisibilityManager {
     // Para usar a classe UI aqui
     UI ui;
 
-    // Para a tela de menu
-    private Menu menu;
-
     // Constructor
     public VisibilityManager(UI userInterface) {
 
@@ -27,12 +24,16 @@ public class VisibilityManager {
         ui.startButtonPanel.setVisible(true);
         ui.exitButtonPanel.setVisible(true);
         ui.gameVersionLabel.setVisible(true);
+        ui.backgroundPanel.setVisible(true);
+        ui.subtitleLabel.setVisible(true);
 
         // Esconde
         ui.mainTextPanel.setVisible(false);
         ui.choiceButtonPanel.setVisible(false);
         ui.playerPanel.setVisible(false);
         ui.statButtonPanel.setVisible(false);
+        ui.picturePanel.setVisible(false);
+        ui.inventoryPanel.setVisible(false);
     }
 
     // Mostrar a tela de jogo
@@ -42,11 +43,15 @@ public class VisibilityManager {
         ui.startButtonPanel.setVisible(false);
         ui.exitButtonPanel.setVisible(false);
         ui.gameVersionLabel.setVisible(false);
+        ui.backgroundPanel.setVisible(false);
+        ui.subtitleLabel.setVisible(false);
 
         ui.mainTextPanel.setVisible(true);
         ui.choiceButtonPanel.setVisible(true);
         ui.playerPanel.setVisible(false);
         ui.statButtonPanel.setVisible(true);
+        ui.picturePanel.setVisible(true);
+        ui.inventoryPanel.setVisible(false);
 
         // Mostra todos os botões de escolha
         showAllChoiceButtons();
@@ -63,6 +68,8 @@ public class VisibilityManager {
         // Mostra apenas o botão 1 (Voltar)
         ui.choice1.setVisible(true);
         ui.choice1.setText("Voltar");
+        ui.choice2.setVisible(true);
+        ui.choice2.setText("Sair");
     }
 
     // Volta para o jogo - o Story vai restaurar o conteúdo anterior

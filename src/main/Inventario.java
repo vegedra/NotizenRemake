@@ -18,7 +18,6 @@ public class Inventario {
 
     // Inicialização do inventário padrão do jogador
     public void setup() {
-        addItem(new Item("Roupas", "Uma muda de roupas", 5, 1));
         addItem(new Item("Documentos", "Documentos importantes", 0, 0));
         addItem(new Item("Reserva", "Sua reserva no hotel", 0, 0));
     }
@@ -66,6 +65,21 @@ public class Inventario {
             for (int i = 0; i < inventario.size(); i++) {
                 ui.mainTextArea.append("\n" + (i + 1) + ". " + inventario.get(i));
             }
+        }
+    }
+
+    public void atualizarInventarioUI(UI ui) {
+        if (ui.inventoryLabels == null) return;
+
+        // Limpa todas as labels primeiro
+        for (int i = 0; i < ui.inventoryLabels.length; i++) {
+            ui.inventoryLabels[i].setText("- Vazio -");
+        }
+
+        // Preenche com os itens do inventário
+        for (int i = 0; i < Math.min(inventario.size(), ui.inventoryLabels.length); i++) {
+            Item item = inventario.get(i);
+            ui.inventoryLabels[i].setText((i + 1) + ". " + item.getNome());
         }
     }
 

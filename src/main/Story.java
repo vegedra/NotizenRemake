@@ -63,30 +63,23 @@ public class Story {
 
     private void showStatusContent() {
         // Imprime a tela de menu
-        printf("=== STATUS ===\n\n", false);
-        printf("Joseph\n", true);
+        printf("Joseph\n", false);
         printf("Pontos de Vida: " + player.hp + "\n", true);
-        printf("Dinheiro: " + player.money + " ℛℳ\n", true);
-        printf("Karma: " + player.karma + "\n", true);
-        printf("Reputação: " + player.rep + "\n", true);
-        printf("Nível de suspeito: " + player.suspicion + "\n", true);
+        printf("Dinheiro: " + player.money + " Reichsmark\n", true);
+        printf("Reputação: " +
+                (player.rep > 2 ? "boa" : player.rep < 0 ? "ruim" : "normal") + "\n", true);
+        printf("Índice de suspeita: " +
+                (player.suspicion > 2 ? "alto" : player.rep < 0 ? "baixo" : "normal") + "\n", true);
         printf("Dia " + player.day + "\n", true);
-        printf("\n=== INVENTÁRIO ===", true);
-
-        // Mostra o inventário
-        inventario.mostrarInventario(ui);
-
-        // Configura botões
-        ui.choice1.setText("Voltar ao Jogo");
-        ui.choice2.setText("-");
-        ui.choice3.setText("-");
-        ui.choice4.setText("-");
 
         // Funções dos botões
         game.nextPosition1 = "backToGame";
-        game.nextPosition2 = "";
+        game.nextPosition2 = "sairJogo";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
+
+        // Atualiza o inventário na UI
+        inventario.atualizarInventarioUI(ui);
 
         game.playerPosition = "statusScreen";
     }
@@ -117,8 +110,10 @@ public class Story {
         switch (nextPosition) {
             // Voltar ao jogo da tela de menu
             case "backToGame": backToGame(); break;
+            case "sairJogo": vm.showTitleScreen(); break;
 
             // Intro do jogo
+            case "continuarIntro": continuarIntro(); break;
             case "continuar0": trainStation(); break;
             case "sairNavio": sairNavio(); break;
             case "ficarNavio": ficarNavio(); break;
@@ -134,13 +129,36 @@ public class Story {
     // Introdução do jogo
     public void gameIntro() {
 
+        // Troca a imagem na tela
+        ui.showImage(".//res//img_port1.jpg");
+
         // Mostra o texto com scroll caso seja muito grande
         printf("29 de Agosto, 1939" +
-                "\nEu sou Joseph. Sou um diplomata à caminho da Alemanha." +
-                "\nMeus motivos oficiais são para negociação e observação, entretanto, " +
-                "o que realmente busco é informação a respeito do meu avô," +
-                " aquele que me criou e que, agora, se encontra desaparecido após enviar uma carta para mim...\n" +
-                "\nMe hospedei no mesmo hotel em que ele estava. Preciso chegar lá até o fim do dia.", false);
+                "\nEu sou Joseph. Sou um diplomata à caminho da Alemanha. " +
+                "Estou procurando meu avô. Ele é uma pessoa muito especial para mim.\n" +
+                " \nApós muito tempo sem contato, recebi uma carta dele...\n", false);
+
+        // Escolhas
+        ui.choice1.setText("Continuar");
+        ui.choice2.setText("-");
+        ui.choice3.setText("-");
+        ui.choice4.setText("-");
+
+        game.nextPosition1 = "continuarIntro";
+        game.nextPosition2 = "";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "";
+
+        // Posição atual do jogador
+        game.playerPosition = "gameIntro";
+    }
+
+    // Introdução do jogo
+    public void continuarIntro() {
+
+        printf("Na carta, ele dizia para nos encontrarmos em Berlin. " +
+                "Por conta do meu trabalho, aproveitei a oportunidade.\n" +
+                "\nTenho até o fim do dia para chegar no hotel.\n", false);
 
         // Escolhas
         ui.choice1.setText("Continuar");
@@ -154,16 +172,13 @@ public class Story {
         game.nextPosition4 = "";
 
         // Posição atual do jogador
-        game.playerPosition = "gameIntro";
-
-        System.out.println(game.playerPosition);
+        game.playerPosition = "continuarIntro";
     }
 
     // Começo do jogo
     public void trainStation() {
 
-        //player.position = "trainStation";
-        printf("Após uma longa viagem de navio, você finalmente chega ao porto." +
+        printf("Após uma longa viagem de navio, você finalmente chega ao porto.\n" +
                 "\nO capitão anuncia a chegada e pede para os passageiros desembarcarem.", false);
 
         ui.choice1.setText("Sair do navio");
@@ -182,13 +197,12 @@ public class Story {
     // Se sai de uma vez do navio
     public void sairNavio() {
 
+        // Mostra os paíneis agora
         ui.playerPanel.setVisible(true);
+        ui.inventoryPanel.setVisible(true);
 
         printf("Você decide sair do navio." +
                 "\nAntes de sair, você decide verificar sua maleta:", false);
-
-        // Mostra o inventário
-        inventario.mostrarInventario(ui);
 
         ui.choice1.setText("Continuar");
         ui.choice2.setText("-");
@@ -262,10 +276,10 @@ public class Story {
 
         printf("Você está dentro do trem." +
                 "\nA vista lá fora é bela, porém..." +
-                "\nAlgo parece errado...", false);
+                "\nAlgo parece errado...\n", false);
 
         if (player.rep >= 1) {
-            printf("\nUma pessoa senta ao seu lado..." +
+            printf("\nUma pessoa senta ao seu lado...\n" +
                     "\nDesconhecido: Guten morgen!" +
                     "\nDesconhecido: Vi que o senhor parece ser um senhor bastante educado!" +
                     "\nDesconhecido: Continue assim! Ser educado com as pessoas tem seus beneficios." +
@@ -279,6 +293,9 @@ public class Story {
                 "\nDesconhecido: Hmf...\n" +
                 "\nParece que você ficou com uma má fama...", true);
         }
+
+        // Mostrar atualização
+        ui.playerMoneyLabelNum.setText("" + player.money);
 
         ui.choice1.setText("Continuar");
         ui.choice2.setText("-");

@@ -45,7 +45,7 @@ public class Game {
 
     // Inicializa valores iniciais para o jogo
     public void gameSetup() {
-        // Cada classe cuida da sua parte
+        // Cada classe se inicia com seus valores
         player.setup();
         inventario.setup();
 
@@ -53,6 +53,9 @@ public class Game {
         ui.hpLabelNum.setText("" + player.hp);
         ui.playerMoneyLabelNum.setText("" + player.money);
         ui.gameDate.setText("Dia " + player.day);
+
+        // Atualiza o inventário na UI
+        inventario.atualizarInventarioUI(ui);
     }
 
 
@@ -71,6 +74,7 @@ public class Game {
                     vm.showGameScreen();
                     story.gameIntro();
                     break;
+                // Botões de escolha
                 case "c1": story.selectPosition(nextPosition1); break;
                 case "c2": story.selectPosition(nextPosition2); break;
                 case "c3": story.selectPosition(nextPosition3); break;

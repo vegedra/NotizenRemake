@@ -8,8 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -22,18 +23,22 @@ public class UI {
     JFrame window;              // A janela em si
 
     // Cria os paineis:
-    JPanel titleNamePanel, startButtonPanel, exitButtonPanel, mainTextPanel,
-            statButtonPanel,  choiceButtonPanel, playerPanel;
+    JPanel titleNamePanel, startButtonPanel, exitButtonPanel, mainTextPanel, backgroundPanel,
+            statButtonPanel,  choiceButtonPanel, playerPanel, picturePanel, inventoryPanel;
 
     // Cria o botão de iniciar jogo
-    JButton startButton, exitButton, choice1, choice2, choice3, choice4, statsButton;
+    JButton startButton, exitButton, choice1, choice2, choice3, choice4,
+            statsButton;
 
     // Cria os textos
     JTextArea mainTextArea;
-    JLabel titleNameLabel, gameVersionLabel,
+    JLabel titleNameLabel, gameVersionLabel, pictureLabel, subtitleLabel, backgroundLabel,
             hpLabel, hpLabelNum, playerMoneyLabel, playerMoneyLabelNum, gameDate;
 
-    JScrollPane scrollPane;
+    ImageIcon image, backgroundImage;
+
+    // Mostrar o inventário
+    public JLabel[] inventoryLabels;
 
     // Cria as fontes (nome da fonte, estilo, tamanho
     Font titleFont = new Font("Times New Roman", Font.PLAIN, 80);
@@ -41,12 +46,15 @@ public class UI {
     Font buttonFont2 = new Font("Gothic", Font.PLAIN, 18);
     Font textFont = new Font("Lucida", Font.PLAIN, 20);
     Font textHud = new Font("Times New Roman", Font.PLAIN, 22);
+    Font subtitleFont = new Font("Times New Roman", Font.ITALIC, 18);
 
     // Cria a tela de ínicio do jogo
     public void createUI(Game.ChoiceHandler cHandler) {
 
         // Inicializa o JFrame - WINDOW
         window = new JFrame();
+        // Remove o botão de maximizar
+        window.setResizable(false);
         // Tamanho da janela (width, height)
         window.setSize(800, 600);
         // Botão de fechar a janela e finalizar programa
@@ -56,13 +64,29 @@ public class UI {
         // Para usar um layout customizado
         window.setLayout(null);
 
+        // ---- IMAGEM DE FUNDO ----
+        backgroundPanel = new JPanel();
+        backgroundPanel.setBounds(0, 0, 800, 600);
+        backgroundPanel.setLayout(null);
+
+        // Tenta carregar a imagem de fundo
+        try {
+            backgroundImage = new ImageIcon(".//res//background.jpg");
+            backgroundLabel = new JLabel(backgroundImage);
+            backgroundLabel.setBounds(0, 0, 800, 600);
+            backgroundPanel.add(backgroundLabel);
+        } catch (Exception e) {
+            // Fallback: fundo preto se a imagem não carregar
+            backgroundLabel.setBackground(Color.black);
+        }
+
         // ---- Tela de ínicio ----
         // Cria o painel/espaço para o título do jogo
         titleNamePanel = new JPanel();
         // Coloca o painel nas seguintes coordenadas (startX, startY, witdh, height)
-        titleNamePanel.setBounds(100, 100, 600, 150);
+        titleNamePanel.setBounds(100, 50, 600, 150);
         // Fundo do painel de titulo
-        titleNamePanel.setBackground(Color.black);
+        titleNamePanel.setBackground(new Color(0, 0, 0, 0));
 
         // Cria o texto do título do jogo
         titleNameLabel = new JLabel("NOTIZEN");
@@ -70,11 +94,19 @@ public class UI {
         titleNameLabel.setForeground(Color.white);
         // Define a fonte (fonte e tamanho) ao texto de título
         titleNameLabel.setFont(titleFont);
+        titleNamePanel.add(titleNameLabel);
+
+        // Subtítulo
+        subtitleLabel = new JLabel("DIGITAL CAKE STUDIO");
+        subtitleLabel.setForeground(Color.yellow);
+        subtitleLabel.setFont(subtitleFont);
+        subtitleLabel.setBounds(300, 5, 200, 50);
+        window.add(subtitleLabel);
 
         // Cria o painel do botão de iniciar o jogo
         startButtonPanel = new JPanel();
         startButtonPanel.setBounds(300, 400, 200, 50);
-        startButtonPanel.setBackground(Color.black);
+        startButtonPanel.setBackground(new Color(0, 0, 0, 0));
 
         // Cria o botão de iniciar o jogo
         startButton = new JButton("JOGAR");
@@ -90,7 +122,7 @@ public class UI {
         // Cria o painel do botão de sair do jogo
         exitButtonPanel = new JPanel();
         exitButtonPanel.setBounds(300, 450, 200, 50);
-        exitButtonPanel.setBackground(Color.black);
+        exitButtonPanel.setBackground(new Color(0, 0, 0, 0));
 
         // Cria o botão de sair do jogo
         exitButton = new JButton("SAIR");
@@ -103,7 +135,7 @@ public class UI {
 
 
         // Cria o texto do texto de versão - sem panel, pois é mais simples
-        gameVersionLabel = new JLabel("Ver 0.5.0");
+        gameVersionLabel = new JLabel("Ver 0.6.0");
         gameVersionLabel.setForeground(Color.yellow);
         gameVersionLabel.setFont(new Font("Futura", Font.PLAIN, 20));
         gameVersionLabel.setBounds(695, 470, 300, 150);
@@ -119,37 +151,30 @@ public class UI {
         window.add(titleNamePanel);
         window.add(startButtonPanel);
         window.add(exitButtonPanel);
-
+        window.add(backgroundPanel);
 
         // ---- Game Screen ----
         // Cria a área do texto principal
         mainTextPanel = new JPanel();
-        mainTextPanel.setBounds(100, 100, 600, 250);
+        mainTextPanel.setBounds(50, 350, 430, 250);
         mainTextPanel.setBackground(Color.black);
         mainTextPanel.setLayout(new BorderLayout());
         window.add(mainTextPanel);
 
         // Cria a area do texto em si
         mainTextArea = new JTextArea("Teste da área principal de texto.");
+        mainTextArea.setBounds(50, 350, 430, 250);
         mainTextArea.setBackground(Color.black);
         mainTextArea.setForeground(Color.white);
         mainTextArea.setFont(textFont);
         mainTextArea.setLineWrap(true);
         mainTextArea.setWrapStyleWord(true);
         mainTextArea.setEditable(false);
-
-        // Cria e configura o JScrollPane
-        JScrollPane scrollPane = new JScrollPane(mainTextArea);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setBackground(Color.black);
-        scrollPane.setForeground(Color.black);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        mainTextPanel.add(scrollPane, BorderLayout.CENTER);
+        mainTextPanel.add(mainTextArea);
 
         // Cria o paínel dos botões de escolha do jogador
         choiceButtonPanel = new JPanel();
-        choiceButtonPanel.setBounds(250, 400, 300, 150);
+        choiceButtonPanel.setBounds(510, 375, 250, 150);
         choiceButtonPanel.setBackground(Color.black);
         choiceButtonPanel.setLayout(new GridLayout(4, 1));   // Layout que mostra os botões embaixo um do outro
         window.add(choiceButtonPanel);
@@ -171,10 +196,54 @@ public class UI {
         choice4.addActionListener(cHandler);
         choice4.setActionCommand("c4");
 
+        // Painel do inventário
+        inventoryPanel = new JPanel();
+        inventoryPanel.setBounds(510, 65, 250, 300);
+        inventoryPanel.setBackground(Color.black);
+        inventoryPanel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        inventoryPanel.setLayout(new GridLayout(6,1));
+        window.add(inventoryPanel);
+
+        // Labels do inventário
+        JLabel inventoryTitle = new JLabel("        - INVENTÁRIO- ");
+        inventoryTitle.setForeground(Color.white);
+        inventoryTitle.setFont(textHud);
+        inventoryPanel.add(inventoryTitle);
+
+        // Para imprimir os itens no inventário
+        inventoryLabels = new JLabel[5];
+        for (int i = 0; i < 5; i++) {
+            inventoryLabels[i] = new JLabel("- Vazio");
+            inventoryLabels[i].setForeground(Color.white);
+            inventoryLabels[i].setFont(textHud);
+            //inventoryLabels[i].setHorizontalAlignment(SwingConstants.LEFT);
+            inventoryPanel.add(inventoryLabels[i]);
+        }
+
+        // ---- IMAGENS ----
+        picturePanel = new JPanel();
+        picturePanel.setBounds(45, 60, 450, 280);
+        picturePanel.setBackground(Color.black);
+        window.add(picturePanel);
+
+        pictureLabel = new JLabel("Imagem não encontrada");  // Pode mostrar texto e imagens
+        pictureLabel.setForeground(Color.white);
+        pictureLabel.setFont(buttonFont);
+
+        // Tenta carregar a imagem com try-catch
+        try {
+            image = new ImageIcon(".//res//imageTest.png");
+            pictureLabel.setIcon(image);
+            pictureLabel.setText(""); // Remove o texto se a imagem carregar
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar imagem: " + e.getMessage());
+            // Mantém o texto "Imagem não encontrada"
+        }
+        picturePanel.add(pictureLabel);
 
         // --- PAINEL BOTÃO DE AÇÃO (Inventário/Stats) ---
         statButtonPanel = new JPanel();
-        statButtonPanel.setBounds(665, 20, 100, 40);
+        statButtonPanel.setBounds(660, 15, 100, 40);
         statButtonPanel.setBackground(Color.pink);
         statButtonPanel.setLayout(new GridLayout(1, 1));   // Layout que mostra os botões embaixo um do outro
         window.add(statButtonPanel);
@@ -183,7 +252,6 @@ public class UI {
         statButton.addActionListener(cHandler);
         statButton.setActionCommand("stats");
         statButtonPanel.add(statButton);
-
 
         // Adiciona os botões no panel
         choiceButtonPanel.add(choice1);
@@ -239,5 +307,20 @@ public class UI {
         button.setText(text);
         button.setFocusPainted(false);
         return button;
+    }
+
+    // Mostra e muda a imagem na tela
+    public void showImage(String imagePath) {
+        try {
+            image = new ImageIcon(imagePath);
+            pictureLabel.setIcon(image);
+            pictureLabel.setText(""); // Remove texto se imagem carregar
+            pictureLabel.revalidate();
+            pictureLabel.repaint();
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar imagem: " + imagePath);
+            pictureLabel.setIcon(null);
+            pictureLabel.setText("Imagem não encontrada: " + imagePath);
+        }
     }
 }
