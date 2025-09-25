@@ -107,23 +107,27 @@ public class Story {
 
     // Lida com as escolhas do jogador
     public void selectPosition(String nextPosition) {
-        switch (nextPosition) {
-            // Voltar ao jogo da tela de menu
-            case "backToGame": backToGame(); break;
-            case "sairJogo": vm.showTitleScreen(); break;
-
-            // Intro do jogo
-            case "continuarIntro": continuarIntro(); break;
-            case "continuar0": trainStation(); break;
-            case "sairNavio": sairNavio(); break;
-            case "ficarNavio": ficarNavio(); break;
-            case "educado0": respostaNavio(true); break;
-            case "arrogante0": respostaNavio(false); break;
-            case "continuar1": inTrain(); break;
-
-            // Chega na cidade
-            //...
-        }
+        while (player.hp > 0) {
+            switch (nextPosition) {
+                // Voltar ao jogo da tela de menu
+                case "backToGame": backToGame(); break;
+                case "sairJogo": vm.showTitleScreen(); break;
+    
+                // Intro do jogo
+                case "continuarIntro": continuarIntro(); break;
+                case "continuar0": trainStation(); break;
+                case "sairNavio": sairNavio(); break;
+                case "ficarNavio": ficarNavio(); break;
+                case "educado0": respostaNavio(true); break;
+                case "arrogante0": respostaNavio(false); break;
+                case "continuar1": inTrain(); break;
+    
+                // Chega na cidade
+                //...
+            }
+        } 
+        printf("Fim de jogo", true);
+        vm.gameOverScreen();
     }
 
     // Introdução do jogo
