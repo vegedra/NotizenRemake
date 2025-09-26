@@ -32,6 +32,22 @@ public class Story {
         ui.mainTextArea.setCaretPosition(0);
     }
 
+    // Tela de game over
+    public void showGameOverScreen() {
+        ui.mainTextArea.setText("Fim de jogo.\nVocê morreu.");
+        vm.gameOverScreen();
+
+        ui.choice1.setText("Voltar ao início");
+        ui.choice2.setText("-");
+        ui.choice3.setText("-");
+        ui.choice4.setText("-");
+
+        game.nextPosition1 = "sairJogo";
+        game.nextPosition2 = "";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "";
+    }
+
     // ---- Tela de Menu ----
     public void showMenuScreen() {
         // Salva estado atual
@@ -107,12 +123,19 @@ public class Story {
 
     // Lida com as escolhas do jogador
     public void selectPosition(String nextPosition) {
-        while (player.hp > 0) {
             switch (nextPosition) {
                 // Voltar ao jogo da tela de menu
                 case "backToGame": backToGame(); break;
-                case "sairJogo": vm.showTitleScreen(); break;
-    
+                case "sairJogo":
+                    if (game.isGameOver()) {
+                        // Reseta o jogo completamente
+                        player.setup();
+                        inventario.setup();
+                        game.gameSetup();
+                    }
+                    vm.showTitleScreen();
+                    break;
+
                 // Intro do jogo
                 case "continuarIntro": continuarIntro(); break;
                 case "continuar0": trainStation(); break;
@@ -121,14 +144,12 @@ public class Story {
                 case "educado0": respostaNavio(true); break;
                 case "arrogante0": respostaNavio(false); break;
                 case "continuar1": inTrain(); break;
-    
+
                 // Chega na cidade
                 //...
             }
-        } 
-        printf("Fim de jogo", true);
-        vm.gameOverScreen();
-    }
+        }
+
 
     // Introdução do jogo
     public void gameIntro() {
@@ -261,6 +282,9 @@ public class Story {
         // Debug
         System.out.println("playerRep: " + player.rep +
                 "\nplayerKarma: " + player.karma);
+
+        player.hp -= 5; // Causa dano
+        ui.hpLabelNum.setText("" + player.hp); // Atualiza UI
 
         ui.choice1.setText("Continuar");
         ui.choice2.setText("-");

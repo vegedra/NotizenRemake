@@ -76,19 +76,20 @@ public class VisibilityManager {
     public void gameOverScreen() {
         // Esconde as coisas
         ui.statButtonPanel.setVisible(false);
-        ui.mainTextPanel.setVisible(false);
+        ui.mainTextPanel.setVisible(true);
         ui.playerPanel.setVisible(false);
-        ui.picturePanel.setVisible(false);
+        ui.picturePanel.setVisible(true);
         ui.inventoryPanel.setVisible(false);
 
         // Esconde todos os botões de escolha normais
         hideAllChoiceButtons();
 
-        // Mostra apenas o botão 1 (Voltar)
+        // Mostra apenas os botões relevantes para game over
         ui.choice1.setVisible(true);
-        ui.choice1.setText("Voltar");
-        ui.choice2.setVisible(true);
-        ui.choice2.setText("Sair");
+        ui.choice1.setText("Voltar ao início");
+        ui.choice2.setVisible(false);
+        ui.choice3.setVisible(false);
+        ui.choice4.setVisible(false);
     }
 
     // Volta para o jogo - o Story vai restaurar o conteúdo anterior

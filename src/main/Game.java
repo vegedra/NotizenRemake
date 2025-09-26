@@ -58,6 +58,11 @@ public class Game {
         inventario.atualizarInventarioUI(ui);
     }
 
+    // Verifica se é game over
+    public boolean isGameOver() {
+        return player.hp <= 0;
+    }
+
 
     // Lida com o input do jogador nos botões-GUI
     public class ChoiceHandler implements ActionListener {
@@ -67,6 +72,12 @@ public class Game {
 
             // Recebe o botão apertado e o armazena na String
             String playerChoice = event.getActionCommand();
+
+            // Verifica se o jogador está vivo e permite apertar no botão c1
+            if (isGameOver() && !playerChoice.equals("c1")) {
+                story.showGameOverScreen();
+                return;
+            }
 
             switch (playerChoice) {
                 // Botão START
@@ -81,6 +92,11 @@ public class Game {
                 case "c4": story.selectPosition(nextPosition4); break;
                 // Tela de informações do jogador
                 case "stats": story.showMenuScreen(); break;
+            }
+
+            // Verifica se morreu após a ação
+            if (isGameOver()) {
+                story.showGameOverScreen();
             }
         }
     }
