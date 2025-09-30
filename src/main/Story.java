@@ -34,7 +34,8 @@ public class Story {
 
     // Tela de game over
     public void showGameOverScreen() {
-        ui.mainTextArea.setText("Fim de jogo.\nVocê morreu.");
+        ui.mainTextArea.setText("Fim de jogo.\nVocê alcançou o final: ");
+        printf("\nTente novamente...", true);
         vm.gameOverScreen();
 
         ui.choice1.setText("Voltar ao início");
