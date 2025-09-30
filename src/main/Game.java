@@ -74,7 +74,7 @@ public class Game {
             String playerChoice = event.getActionCommand();
 
             // Verifica se o jogador está vivo e permite apertar no botão c1
-            if (isGameOver() && !playerChoice.equals("c1")) {
+            if ((isGameOver() || player.suspicion > 10) && playerChoice.equals("c1")) {
                 story.showGameOverScreen();
                 return;
             }
