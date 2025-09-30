@@ -160,8 +160,8 @@ public class Story {
 
         // Mostra o texto com scroll caso seja muito grande
         printf("29 de Agosto, 1939" +
-                "\nEu sou Joseph. Sou um diplomata à caminho da Alemanha. " +
-                "Estou procurando meu avô. Ele é uma pessoa muito especial para mim.\n" +
+                "\nEu sou Joseph. Sou um jornalista à caminho da Alemanha. " +
+                "Procuro pelo meu avô. Ele é alguém muito especial para mim.\n" +
                 " \nApós muito tempo sem contato, recebi uma carta dele...\n", false);
 
         // Escolhas
@@ -184,7 +184,7 @@ public class Story {
 
         printf("Na carta, ele dizia para nos encontrarmos em Berlin. " +
                 "Por conta do meu trabalho, aproveitei a oportunidade.\n" +
-                "\nTenho até o fim do dia para chegar no hotel.\n", false);
+                "\nTenho até o fim do dia para chegar no hotel. Preciso ter cuidado.\n", false);
 
         // Escolhas
         ui.choice1.setText("Continuar");
