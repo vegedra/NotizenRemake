@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -135,7 +135,7 @@ public class UI {
 
 
         // Cria o texto do texto de versão - sem panel, pois é mais simples
-        gameVersionLabel = new JLabel("Ver 0.6.0");
+        gameVersionLabel = new JLabel("Ver 0.6.5");
         gameVersionLabel.setForeground(Color.yellow);
         gameVersionLabel.setFont(new Font("Futura", Font.PLAIN, 20));
         gameVersionLabel.setBounds(695, 470, 300, 150);
@@ -156,21 +156,29 @@ public class UI {
         // ---- Game Screen ----
         // Cria a área do texto principal
         mainTextPanel = new JPanel();
-        mainTextPanel.setBounds(50, 350, 430, 250);
+        mainTextPanel.setBounds(50, 350, 445, 200);
         mainTextPanel.setBackground(Color.black);
         mainTextPanel.setLayout(new BorderLayout());
         window.add(mainTextPanel);
 
         // Cria a area do texto em si
         mainTextArea = new JTextArea("Teste da área principal de texto.");
-        mainTextArea.setBounds(50, 350, 430, 250);
+        //mainTextArea.setBounds(50, 350, 430, 250);
         mainTextArea.setBackground(Color.black);
         mainTextArea.setForeground(Color.white);
         mainTextArea.setFont(textFont);
         mainTextArea.setLineWrap(true);
         mainTextArea.setWrapStyleWord(true);
         mainTextArea.setEditable(false);
-        mainTextPanel.add(mainTextArea);
+
+        // Cria JScrollPane para o mainTextArea
+        JScrollPane scrollPane = new JScrollPane(mainTextArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setBackground(Color.black);
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 200));
+        mainTextPanel.add(scrollPane);
 
         // Cria o paínel dos botões de escolha do jogador
         choiceButtonPanel = new JPanel();

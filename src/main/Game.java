@@ -58,6 +58,27 @@ public class Game {
         inventario.atualizarInventarioUI(ui);
     }
 
+    public void resetGame() {
+        System.out.println("Resetando jogo...");
+
+        // Reseta completamente o jogo
+        player.setup();
+        inventario.setup();
+        gameSetup();
+
+        // Limpa estados salvos
+        savedPosition = null;
+        savedText = null;
+        savedChoice1 = savedChoice2 = savedChoice3 = savedChoice4 = null;
+        savedNext1 = savedNext2 = savedNext3 = savedNext4 = null;
+
+        // Reseta a posição do jogador para um estado limpo
+        playerPosition = "titleScreen";
+
+        // Volta para a tela inicial
+        vm.showTitleScreen();
+    }
+
     // Verifica se é game over
     public boolean isGameOver() {
         return player.hp <= 0;
@@ -72,6 +93,15 @@ public class Game {
 
             // Recebe o botão apertado e o armazena na String
             String playerChoice = event.getActionCommand();
+
+            // Verifica se o jogador está na tela de game over
+            if ("gameOverScreen".equals(playerPosition)) {
+                // Se estiver na tela de game over, permite apenas o botão c1 funcionar
+                if (playerChoice.equals("c1")) {
+                    story.selectPosition(nextPosition1);
+                }
+                return; // Impede outras ações na tela de game over
+            }
 
             // Verifica se o jogador está vivo e permite apertar no botão c1
             if ((isGameOver() || player.suspicion > 10) && playerChoice.equals("c1")) {
@@ -94,8 +124,8 @@ public class Game {
                 case "stats": story.showMenuScreen(); break;
             }
 
-            // Verifica se morreu após a ação
-            if (isGameOver()) {
+            // Verifica se morreu após a ação (e não está já na tela de game over)
+            if (isGameOver() && !"gameOverScreen".equals(playerPosition)) {
                 story.showGameOverScreen();
             }
         }

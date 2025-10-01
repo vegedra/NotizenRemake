@@ -34,6 +34,8 @@ public class Story {
 
     // Tela de game over
     public void showGameOverScreen() {
+        game.playerPosition = "gameOverScreen";
+
         ui.mainTextArea.setText("Fim de jogo.\nVocê alcançou o final: ");
         printf("\nTente novamente...", true);
         vm.gameOverScreen();
@@ -43,7 +45,7 @@ public class Story {
         ui.choice3.setText("-");
         ui.choice4.setText("-");
 
-        game.nextPosition1 = "sairJogo";
+        game.nextPosition1 = "reset";
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
@@ -91,7 +93,7 @@ public class Story {
 
         // Funções dos botões
         game.nextPosition1 = "backToGame";
-        game.nextPosition2 = "sairJogo";
+        game.nextPosition2 = "reset";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
 
@@ -127,19 +129,14 @@ public class Story {
             switch (nextPosition) {
                 // Voltar ao jogo da tela de menu
                 case "backToGame": backToGame(); break;
-                case "sairJogo":
-                    if (game.isGameOver()) {
-                        // Reseta o jogo completamente
-                        player.setup();
-                        inventario.setup();
-                        game.gameSetup();
-                    }
-                    vm.showTitleScreen();
+                case "reset":
+                    // Reseta o jogo
+                    game.resetGame();
                     break;
 
                 // Intro do jogo
-                case "continuarIntro": continuarIntro(); break;
-                case "continuar0": trainStation(); break;
+                case "continuarIntro1": continuarIntro1(); break;
+                case "trainStation": trainStation(); break;
                 case "sairNavio": sairNavio(); break;
                 case "ficarNavio": ficarNavio(); break;
                 case "educado0": respostaNavio(true); break;
@@ -147,7 +144,7 @@ public class Story {
                 case "continuar1": inTrain(); break;
 
                 // Chega na cidade
-                //...
+                // ...
             }
         }
 
@@ -155,14 +152,13 @@ public class Story {
     // Introdução do jogo
     public void gameIntro() {
 
-        // Troca a imagem na tela
-        ui.showImage(".//res//img_port1.jpg");
+        ui.showImage("");
 
         // Mostra o texto com scroll caso seja muito grande
-        printf("29 de Agosto, 1939" +
-                "\nEu sou Joseph. Sou um jornalista à caminho da Alemanha. " +
-                "Procuro pelo meu avô. Ele é alguém muito especial para mim.\n" +
-                " \nApós muito tempo sem contato, recebi uma carta dele...\n", false);
+        printf("Este jogo não possui salvamento de progresso. \n" +
+                "\nVocê tem 3 dias para desvendar o mistério... " +
+                "Porém, não se sinta desmotivado. " +
+                " \nTente quantas vezes forem necessárias.", false);
 
         // Escolhas
         ui.choice1.setText("Continuar");
@@ -170,7 +166,7 @@ public class Story {
         ui.choice3.setText("-");
         ui.choice4.setText("-");
 
-        game.nextPosition1 = "continuarIntro";
+        game.nextPosition1 = "continuarIntro1";
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
@@ -179,12 +175,21 @@ public class Story {
         game.playerPosition = "gameIntro";
     }
 
-    // Introdução do jogo
-    public void continuarIntro() {
+    public void continuarIntro1() {
 
-        printf("Na carta, ele dizia para nos encontrarmos em Berlin. " +
+        // Troca a imagem na tela
+        ui.showImage(".//res//img_port1.jpg");
+
+        // Mostra o texto com scroll caso seja muito grande
+        printf("29 de Agosto, 1939" +
+                "\nEu sou Joseph. Sou um jornalista à caminho da Alemanha. " +
+                "Procuro pelo meu avô. Ele é alguém muito especial para mim.\n" +
+                " \nApós muito tempo sem contato, recebi uma carta estranha dele...\n" +
+
+                "\nNa carta, ele dizia para nos encontrarmos em Berlin. " +
                 "Por conta do meu trabalho, aproveitei a oportunidade.\n" +
-                "\nTenho até o fim do dia para chegar no hotel. Preciso ter cuidado.\n", false);
+                "\nTenho até o fim do dia para chegar no hotel. Preciso coletar mais informações " +
+                "e... preciso ter cuidado...\n", false);
 
         // Escolhas
         ui.choice1.setText("Continuar");
@@ -192,13 +197,13 @@ public class Story {
         ui.choice3.setText("-");
         ui.choice4.setText("-");
 
-        game.nextPosition1 = "continuar0";
+        game.nextPosition1 = "trainStation";
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
 
         // Posição atual do jogador
-        game.playerPosition = "continuarIntro";
+        game.playerPosition = "continuarIntro1";
     }
 
     // Começo do jogo
@@ -284,8 +289,9 @@ public class Story {
         System.out.println("playerRep: " + player.rep +
                 "\nplayerKarma: " + player.karma);
 
-        player.hp -= 5; // Causa dano
+        /* player.hp -= 5; // Causa dano
         ui.hpLabelNum.setText("" + player.hp); // Atualiza UI
+        */
 
         ui.choice1.setText("Continuar");
         ui.choice2.setText("-");
@@ -310,10 +316,11 @@ public class Story {
         if (player.rep >= 1) {
             printf("\nUma pessoa senta ao seu lado...\n" +
                     "\nDesconhecido: Guten morgen!" +
-                    "\nDesconhecido: Vi que o senhor parece ser um senhor bastante educado!" +
+                    "\nDesconhecido: Vi que o senhor parece ser uma pessoa bastante educada!" +
                     "\nDesconhecido: Continue assim! Ser educado com as pessoas tem seus beneficios." +
                     "\nDesconhecido: Aqui, tome isto:\n", true);
             player.money += 2;
+            ui.playerMoneyLabelNum.setText("" + player.money); // Atualiza UI
             printf("\nVocê recebeu 2 ℛℳ!\n" +
                     "\nDesconhecido: O suficiente para uma boa xícara de café.. Ha, ha!\n", true);
         }
@@ -322,9 +329,6 @@ public class Story {
                 "\nDesconhecido: Hmf...\n" +
                 "\nParece que você ficou com uma má fama...", true);
         }
-
-        // Mostrar atualização
-        ui.playerMoneyLabelNum.setText("" + player.money);
 
         ui.choice1.setText("Continuar");
         ui.choice2.setText("-");
