@@ -135,7 +135,7 @@ public class UI {
 
 
         // Cria o texto do texto de versão - sem panel, pois é mais simples
-        gameVersionLabel = new JLabel("Ver 0.6.5");
+        gameVersionLabel = new JLabel("Ver 0.7.0");
         gameVersionLabel.setForeground(Color.yellow);
         gameVersionLabel.setFont(new Font("Futura", Font.PLAIN, 20));
         gameVersionLabel.setBounds(695, 470, 300, 150);

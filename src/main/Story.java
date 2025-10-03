@@ -4,7 +4,7 @@
 package main;
 
 // O jogo em si - textos, falas, etc
-public class Story {
+public class Story {    // erro: duplicate class 'Story'
 
     // Importa as classes
     Game game;
@@ -107,6 +107,11 @@ public class Story {
     public void backToGame() {
         vm.backToGame();
         restoreGameState();
+
+        // Atualiza a UI após voltar
+        ui.hpLabelNum.setText("" + player.hp);
+        ui.playerMoneyLabelNum.setText("" + player.money);
+        inventario.atualizarInventarioUI(ui);
     }
 
     private void restoreGameState() {
@@ -126,27 +131,79 @@ public class Story {
 
     // Lida com as escolhas do jogador
     public void selectPosition(String nextPosition) {
-            switch (nextPosition) {
-                // Voltar ao jogo da tela de menu
-                case "backToGame": backToGame(); break;
-                case "reset":
-                    // Reseta o jogo
-                    game.resetGame();
-                    break;
+        switch (nextPosition) {
+            // Voltar ao jogo da tela de menu
+            case "backToGame":
+                backToGame();
+                break;
+            case "reset":
+                // Reseta o jogo
+                game.resetGame();
+                break;
 
-                // Intro do jogo
-                case "continuarIntro1": continuarIntro1(); break;
-                case "trainStation": trainStation(); break;
-                case "sairNavio": sairNavio(); break;
-                case "ficarNavio": ficarNavio(); break;
-                case "educado0": respostaNavio(true); break;
-                case "arrogante0": respostaNavio(false); break;
-                case "continuar1": inTrain(); break;
+            // Intro do jogo
+            case "continuarIntro1":
+                continuarIntro1();
+                break;
+            case "trainStation":
+                trainStation();
+                break;
+            case "sairNavio":
+                sairNavio();
+                break;
+            case "ficarNavio":
+                ficarNavio();
+                break;
+            case "educado0":
+                respostaNavio(true);
+                break;
+            case "arrogante0":
+                respostaNavio(false);
+                break;
+            case "continuar1":
+                inTrain();
+                break;
+            case "cityDayOne":
+                cityDayOne(true);
+                break;
 
-                // Chega na cidade
-                // ...
-            }
+            // Chega na cidade
+            // Se evento ocorreu, não chama areaRestrita
+            case "areaRestrita1":
+                if (eventos("carteiraPerdida")) {
+                } else {
+                    areaRestrita(1);
+                }
+                break;
+            case "cityDayOne1":
+                if (eventos("carteiraPerdida")) {
+                } else {
+                    cityDayOne(false);
+                }
+                break;
+            case "lookAround1":
+                lookAround(1);
+                break;
+            case "nortePraca":
+                if (eventos("carteiraPerdida")) {
+                } else {
+                    nortePraca();
+                }
+                break;
+            case "lookAround2":
+                lookAround(2);
+                break;
+            case "PegouCarteiraPerdida":
+                eventos("PegouCarteiraPerdida");
+                break;
+            case "NãoPegouCarteiraPerdida":
+                eventos("NãoPegouCarteiraPerdida");
+                break;
+
+            //case "entrevista1": entrevista(1); break;
+            //case "desfileMilitar": desfileMilitar(); break;
         }
+    }
 
 
     // Introdução do jogo
@@ -323,11 +380,10 @@ public class Story {
             ui.playerMoneyLabelNum.setText("" + player.money); // Atualiza UI
             printf("\nVocê recebeu 2 ℛℳ!\n" +
                     "\nDesconhecido: O suficiente para uma boa xícara de café.. Ha, ha!\n", true);
-        }
-        else if (player.rep <= -1) {
+        } else if (player.rep <= -1) {
             printf("\nUma pessoa senta ao seu lado...\n" +
-                "\nDesconhecido: Hmf...\n" +
-                "\nParece que você ficou com uma má fama...", true);
+                    "\nDesconhecido: Hmf...\n" +
+                    "\nParece que você ficou com uma má fama...", true);
         }
 
         ui.choice1.setText("Continuar");
@@ -341,5 +397,209 @@ public class Story {
         game.nextPosition4 = "";
 
         game.playerPosition = "inTrain";
+    }
+
+    // ---- Centro da cidade ----
+    public void cityDayOne(boolean firstTime) {
+
+        if (firstTime == true) {
+            printf("Após algumas horas no trem, você finalmente chega na cidade." +
+                    "\nAinda há tempo suficiente para encontrar o hotel e, talvez, conseguir informações " +
+                    "sobre seu avô.\n\nPara onde você irá?", false);
+        } else {
+            printf("Você retorna ao centro.\nPara onde você irá?", false);
+        }
+
+        ui.choice1.setText("Praça");
+        ui.choice2.setText("Rua sem saída");
+        ui.choice3.setText("Lugar enfaixado");
+        ui.choice4.setText("Olhar ao seu redor");
+
+        game.nextPosition1 = "nortePraca";
+        game.nextPosition2 = "beco";
+        game.nextPosition3 = "areaRestrita1";
+        game.nextPosition4 = "lookAround1";
+
+        game.playerPosition = "cityDayOne";
+    }
+
+    // Beco - nada ocorre no primeiro dia
+    public void beco() {
+
+        printf("Você começa a subir uma rua ingreme.\nVocê começa a se sentir cansado.\n" +
+                "Não há nada aqui...", false);
+
+        ui.choice1.setText("Voltar");
+        ui.choice2.setText("-");
+        ui.choice3.setText("-");
+        ui.choice4.setText("-");
+
+        game.nextPosition1 = "cityDayOne1";
+        game.nextPosition2 = "";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "";
+
+        game.playerPosition = "beco";
+    }
+
+    // Areas restritas
+    public void areaRestrita(int saida) {
+
+        switch (saida) {
+            case 1:
+                printf("Esta área está restrita...", false);
+
+                ui.choice1.setText("Voltar");
+                ui.choice2.setText("-");
+                ui.choice3.setText("-");
+                ui.choice4.setText("-");
+
+                game.nextPosition1 = "cityDayOne1";
+                game.nextPosition2 = "";
+                game.nextPosition3 = "";
+                game.nextPosition4 = "";
+
+                game.playerPosition = "areaRestrita1";
+        }
+    }
+
+    // Look around
+    public void lookAround(int lugar) {
+
+        switch (lugar) {
+            case 1:
+                player.descobriuDesfile = true;
+
+                printf("Você olha ao seu redor..." +
+                        "\nAs pessoas caminham felizes pela rua, porém, outras nem tanto..." +
+                        "\nVocê percebe uma agitação próxima à Praça.", false);
+
+                ui.choice1.setText("Voltar");
+                ui.choice2.setText("-");
+                ui.choice3.setText("-");
+                ui.choice4.setText("-");
+
+                game.nextPosition1 = "cityDayOne1";
+                game.nextPosition2 = "";
+                game.nextPosition3 = "";
+                game.nextPosition4 = "";
+
+                game.playerPosition = "lookAround1";
+                break;
+
+            case 2:
+                player.descobriuDesfile = true;
+
+                printf("Você olha ao seu redor..." +
+                        "\nVocê percebe uma agitação próxima à Praça.", false);
+
+                ui.choice1.setText("Voltar");
+                ui.choice2.setText("-");
+                ui.choice3.setText("-");
+                ui.choice4.setText("-");
+
+                game.nextPosition1 = "nortePraca";
+                game.nextPosition2 = "";
+                game.nextPosition3 = "";
+                game.nextPosition4 = "";
+
+                game.playerPosition = "lookAround2";
+                break;
+        }
+    }
+
+    public boolean eventos(String eventID) {
+        switch (eventID) {
+            // Encontrar carteira perdida
+            case "carteiraPerdida":
+                // 30% de chance de evento ocorrer
+                if (Math.random() < 0.10) {
+                    if ((!inventario.haveItem("Carteira perdida")) && !player.ignorouCarteira) {
+
+                        // Salva estado atual
+                        saveGameState();
+
+                        printf("Enquanto caminha, você percebe algo no chão.\n" +
+                                "Parece ser uma carteira perdida.\nVocê irá pegar?", false);
+
+                        ui.choice1.setText("Sim");
+                        ui.choice2.setText("Não");
+                        ui.choice3.setText("-");
+                        ui.choice4.setText("-");
+
+                        game.nextPosition1 = "PegouCarteiraPerdida";
+                        game.nextPosition2 = "NãoPegouCarteiraPerdida";
+                        game.nextPosition3 = "";
+                        game.nextPosition4 = "";
+
+                        game.playerPosition = "eventos1";
+                        return true; // Evento ocorreu
+                    }
+                }
+                return false; // Evento não ocorreu
+
+            case "NãoPegouCarteiraPerdida":
+                player.ignorouCarteira = true;
+
+                printf("Você ignora a carteira.", false);
+
+                ui.choice1.setText("Voltar");
+                ui.choice2.setText("-");
+                ui.choice3.setText("-");
+                ui.choice4.setText("-");
+
+                game.nextPosition1 = "backToGame";
+                game.nextPosition2 = "";
+                game.nextPosition3 = "";
+                game.nextPosition4 = "";
+
+                game.playerPosition = "eventos1B";
+                return true;
+
+            case "PegouCarteiraPerdida":
+
+                inventario.addItem(new Item("Carteira perdida", "Uma carteira perdida", 0, 0));
+                inventario.atualizarInventarioUI(ui);
+
+                printf("Você pega a carteira.\n" +
+                        "Ao abrí-la, você vê um documento.\nA carteira parece " +
+                        "pertencer à uma mulher de cabelo escuro...", false);
+
+                ui.choice1.setText("Voltar");
+                ui.choice2.setText("-");
+                ui.choice3.setText("-");
+                ui.choice4.setText("-");
+
+                game.nextPosition1 = "backToGame";
+                game.nextPosition2 = "";
+                game.nextPosition3 = "";
+                game.nextPosition4 = "";
+
+                game.playerPosition = "eventos1A";
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    // Praça - npc para interrogar
+    public void nortePraca() {
+
+        printf("Você caminha até chegar em uma praça." +
+                "\nHá uma bela fonte em seu centro, com pessoas conversando ao seu redor." +
+                "\nTudo parece tão calmo...", false);
+
+        ui.choice1.setText("Olhar ao redor");
+        ui.choice2.setText("Entrevistar alguém");
+        if (player.descobriuDesfile) { ui.choice3.setText("Investigar agitação"); } else { ui.choice3.setText("-"); }
+        ui.choice4.setText("Voltar");
+
+        game.nextPosition1 = "lookAround2";
+        game.nextPosition2 = "entrevista1";
+        if (player.descobriuDesfile) { game.nextPosition3 = "desfileMilitar"; } else { game.nextPosition3 = ""; }
+        game.nextPosition4 = "cityDayOne1";
+
+        game.playerPosition = "nortePraca";
     }
 }

@@ -64,6 +64,7 @@ public class Game {
         // Reseta completamente o jogo
         player.setup();
         inventario.setup();
+        inventario.atualizarInventarioUI(ui);
         gameSetup();
 
         // Limpa estados salvos

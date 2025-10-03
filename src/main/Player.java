@@ -22,6 +22,8 @@ public class Player {
     public boolean scarFlag;           // Cicatriz no queixo caso tenha reagido ao assalto
     public boolean devolveuCarteira;   // Se devolveu a carteira e foi para a cafeteria junto com a mulher
     public boolean visitouLoja1;
+    public boolean descobriuDesfile;
+    public boolean ignorouCarteira;
 
     // Setup inicial do jogador
     public void setup() {
@@ -37,6 +39,8 @@ public class Player {
         this.scarFlag = false;
         this.devolveuCarteira = false;
         this.visitouLoja1 = false;
+        this.descobriuDesfile = false;
+        this.ignorouCarteira = false;
     }
 
     // Pega stats formatado

@@ -18,6 +18,7 @@ public class Inventario {
 
     // Inicialização do inventário padrão do jogador
     public void setup() {
+        clear();
         addItem(new Item("Documentos", "Documentos importantes", 0, 0));
         addItem(new Item("Reserva", "Sua reserva no hotel", 0, 0));
     }

@@ -12,8 +12,11 @@
     <list default="true" id="2439026e-f1c3-4ff1-bd0a-ac9e39446bcb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Inventario.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Inventario.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/Story.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Story.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/UI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/VisibilityManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/VisibilityManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

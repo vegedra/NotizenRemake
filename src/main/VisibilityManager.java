@@ -69,7 +69,7 @@ public class VisibilityManager {
         ui.choice1.setVisible(true);
         ui.choice1.setText("Voltar");
         ui.choice2.setVisible(true);
-        ui.choice2.setText("Sair");
+        ui.choice2.setText("Reiniciar");
     }
 
     // Métodos para a tela de status (simples)
