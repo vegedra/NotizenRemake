@@ -8,13 +8,14 @@ import java.awt.event.ActionListener;
 
 public class Game {
 
-    // Instancia
+    // Instancias
     ChoiceHandler cHandler = new ChoiceHandler();
     UI ui = new UI();
     VisibilityManager vm = new VisibilityManager(ui);
     Player player = new Player();
     Inventario inventario = new Inventario();
-    Story story = new Story(this, ui, vm, player, inventario);
+    StoryManager storyManager = new StoryManager(this, ui, vm, player, inventario);
+    Story story = new Story(this, ui, vm, player, inventario, storyManager);
 
     // Variaveis para os botões de escolha
     String nextPosition1, nextPosition2, nextPosition3, nextPosition4;
@@ -58,6 +59,7 @@ public class Game {
         inventario.atualizarInventarioUI(ui);
     }
 
+    // Reseta o game quando volta da tela de menu ou morre
     public void resetGame() {
         System.out.println("Resetando jogo...");
 
@@ -95,39 +97,54 @@ public class Game {
             // Recebe o botão apertado e o armazena na String
             String playerChoice = event.getActionCommand();
 
+            // Verifica se está na tela de menu e o botão de reiniciar for pressiona
+            if ("statusScreen".equals(playerPosition) && "c2".equals(playerChoice)) {
+                // Mostra pop-up de confirmação
+                int option = javax.swing.JOptionPane.showConfirmDialog(
+                        ui.window,
+                        "Tem certeza que deseja reiniciar o jogo?\nTodo o progresso será perdido.",
+                        "Confirmar Reinício",
+                        javax.swing.JOptionPane.YES_NO_OPTION,
+                        javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+
+                // Se o jogador confirmar
+                if (option == javax.swing.JOptionPane.YES_OPTION) {
+                    resetGame();
+                }
+                return;
+            }
+
             // Verifica se o jogador está na tela de game over
             if ("gameOverScreen".equals(playerPosition)) {
                 // Se estiver na tela de game over, permite apenas o botão c1 funcionar
                 if (playerChoice.equals("c1")) {
                     story.selectPosition(nextPosition1);
                 }
-                return; // Impede outras ações na tela de game over
+                return;
             }
 
             // Verifica se o jogador está vivo e permite apertar no botão c1
             if ((isGameOver() || player.suspicion > 10) && playerChoice.equals("c1")) {
-                story.showGameOverScreen();
+                storyManager.showGameOverScreen();
                 return;
             }
 
             switch (playerChoice) {
                 // Botão START
-                case "start":
-                    vm.showGameScreen();
-                    story.gameIntro();
-                    break;
+                case "start": vm.showGameScreen(); story.gameIntro(); break;
                 // Botões de escolha
                 case "c1": story.selectPosition(nextPosition1); break;
                 case "c2": story.selectPosition(nextPosition2); break;
                 case "c3": story.selectPosition(nextPosition3); break;
                 case "c4": story.selectPosition(nextPosition4); break;
                 // Tela de informações do jogador
-                case "stats": story.showMenuScreen(); break;
+                case "stats": storyManager.showMenuScreen(); break;
             }
 
             // Verifica se morreu após a ação (e não está já na tela de game over)
             if (isGameOver() && !"gameOverScreen".equals(playerPosition)) {
-                story.showGameOverScreen();
+                storyManager.showGameOverScreen();
             }
         }
     }
